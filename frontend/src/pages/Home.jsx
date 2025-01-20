@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBuilding, faEnvelope, faPhone, faDollarSign, faCalendar } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBuilding, faEnvelope, faPhone, faDollarSign, faCalendar, faRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import Button from '../components/Button';
 import api from '../utils/APIClient';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+    const navigate = useNavigate();
     const [values, setValues] = useState({
         name: '',
         company_name: '',
@@ -19,7 +21,7 @@ const Home = () => {
         { key: 'company_name', placeholder: 'Company Name', type: 'text', icon: faBuilding },
         { key: 'email', placeholder: 'Email', type: 'email', icon: faEnvelope },
         { key: 'contact', placeholder: 'Contact', type: 'tel', icon: faPhone },
-        { key: 'amount', placeholder: 'Amount', type: 'number', icon: faDollarSign },
+        { key: 'amount', placeholder: 'Amount', type: 'number', icon: faRupeeSign },
     ];
 
     const handleInputChange = (e, key) => {
@@ -30,7 +32,10 @@ const Home = () => {
         e.preventDefault();
         console.log('Form Values:', values);
         api.post('/sponsorship/add', values).then((res) => {
-            console.log('Response:', res);
+            let sponserId = res.sponsor.id;
+            api.post('/payments/create', { amount: values.amount, sponsor_id: sponserId }).then((res) => {
+                window.location.href = res.pay_page_url;
+            });
         });
     };
 
@@ -41,12 +46,15 @@ const Home = () => {
                     CCS Sponsorship Portal
                 </div>
                 <hr className="my-6 border-2 rounded-lg w-1/2" />
-                <form className="flex flex-col gap-4 w-full max-w-md mt-8" onSubmit={handleSubmit}>
+                <form className="flex flex-col gap-6 w-full max-w-md mt-8" onSubmit={handleSubmit}>
                     {fieldsConfig.map(({ key, placeholder, type, icon }) => (
-                        <div key={key} className="flex items-center border-2 border-gray-200 rounded-lg p-2 focus-within:border-primary">
-                            <FontAwesomeIcon icon={icon} className="text-gray-500 mr-2" />
+                        <div
+                            key={key}
+                            className="flex items-center bg-white border-2 border-gray-200 rounded-lg px-4 py-2 focus-within:border-primary"
+                        >
+                            <FontAwesomeIcon icon={icon} className="text-gray-500" />
                             <input
-                                className="w-full focus:outline-none"
+                                className="w-full pl-4 text-sm focus:outline-none"
                                 type={type}
                                 placeholder={placeholder}
                                 value={values[key]}
@@ -54,15 +62,15 @@ const Home = () => {
                             />
                         </div>
                     ))}
-                    <div className="flex items-center border-2 border-gray-200 rounded-lg p-2 focus-within:border-primary">
-                        <FontAwesomeIcon icon={faCalendar} className="text-gray-500 mr-2" />
+                    <div className="flex items-center bg-white border-2 border-gray-200 rounded-lg px-4 py-2 focus-within:border-primary">
+                        <FontAwesomeIcon icon={faCalendar} className="text-gray-500" />
                         <select
                             value={values.event}
                             onChange={(e) => handleInputChange(e, 'event')}
                             name="event"
-                            className="w-full focus:outline-none"
+                            className="w-full pl-4 text-sm bg-transparent focus:outline-none"
                         >
-                            <option value="" disabled selected>
+                            <option value="" disabled>
                                 Select Event
                             </option>
                             <option value="hacktu">HackTU 6.0</option>
