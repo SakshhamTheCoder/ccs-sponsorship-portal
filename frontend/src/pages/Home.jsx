@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUser, faBuilding, faEnvelope, faPhone, faDollarSign, faCalendar, faRupeeSign } from '@fortawesome/free-solid-svg-icons';
 import Button from '../components/Button';
 import api from '../utils/APIClient';
 import { useNavigate } from 'react-router-dom';
+// import { toWords } from "number-to-words";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -33,11 +34,23 @@ const Home = () => {
         console.log('Form Values:', values);
         api.post('/sponsorship/add', values).then((res) => {
             let sponserId = res.sponsor.id;
-            api.post('/payments/create', { amount: values.amount, sponsor_id: sponserId }).then((res) => {
+            api.post('/payments/create', { amount: parseFloat(values.amount), sponsor_id: sponserId }).then((res) => {
                 window.location.href = res.pay_page_url;
             });
         });
     };
+
+    // const [words, setWords] = useState("");
+
+    // useEffect(() => {
+    //     if (values.amount === "") {
+    //         setWords("");
+    //         return;
+    //     }
+    //     let text = toWords(values.amount);
+    //     setWords(text.charAt(0).toUpperCase() + text.slice(1));
+    // }
+    //     , [values.amount]);
 
     return (
         <div className="flex rounded-lg items-center w-full min-h-[calc(100vh-10rem)]">
@@ -78,6 +91,7 @@ const Home = () => {
                             <option value="codingcommunity">Coding Community</option>
                         </select>
                     </div>
+                    {/* <p>Paying: Rs {words !== "" ? words : "Zero"} Only</p> */}
                     <Button className="py-2 mt-4" isActive text="Submit" />
                 </form>
             </div>

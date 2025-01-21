@@ -17,7 +17,7 @@ class PaymentGatewayView(APIView):
     def post(self, request):
         merchant_id = settings.PHONEPE_MERCHANT_ID
         salt_key = settings.PHONEPE_SALT_KEY
-        salt_index = "1"
+        salt_index = 1
         env = "UAT"  # Set to "PROD" for production
 
         BASE_URLS = {
@@ -80,6 +80,8 @@ class PaymentGatewayView(APIView):
                     json={"request": base64_payload},
                     headers=headers,
                 )
+                print(response.status_code)
+                print(response.request.headers)
 
                 # Successful response
                 if response.status_code == 200:
