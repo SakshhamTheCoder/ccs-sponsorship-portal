@@ -24,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-nii_874r&2t)afm)!)77t7^+58+et+x3ia52bmog@79w0tp%hz"
+SECRECT_KEY = os.getenv("SECRECT_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv("DEBUG")
 
 ALLOWED_HOSTS = [
     "api.sponsorship.ccstiet.com",
@@ -128,12 +128,6 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.1/howto/static-files/
-
-STATIC_URL = "static/"
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -144,6 +138,7 @@ CORS_ALLOWED_ORIGINS = [
     "https://api.sponsorship.ccstiet.com",
     "http://localhost:5173",
     "http://localhost:8000",
+    "http://localhost:3376"
 ]
 CORS_ALLOW_HEADERS = ["*"]
 CSRF_TRUSTED_ORIGINS = [
@@ -151,6 +146,7 @@ CSRF_TRUSTED_ORIGINS = [
     "https://api.sponsorship.ccstiet.com",
     "http://localhost:5173",
     "http://localhost:8000",
+    "http://localhost:3376"
 ]
 
 PHONEPE_MERCHANT_ID = os.getenv("PHONEPE_MERCHANT_ID")
