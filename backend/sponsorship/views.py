@@ -36,19 +36,10 @@ class SponsorshipAddView(APIView):
             )
 
             # Create Payment entry with pending status
-            payment = Payment.objects.create(
-                sponsor=sponsor,
-                amount=amount,
-                transaction_id=str(uuid.uuid4()),  # Generate a unique transaction ID
-                status="Pending",
-            )
 
             # Return the Sponsor and Payment details
             return Response(
-                {
-                    "sponsor": SponsorshipSerializer(sponsor).data,
-                    "payment": PaymentSerializer(payment).data,
-                },
+                SponsorshipSerializer(sponsor).data,
                 status=status.HTTP_201_CREATED,
             )
 

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser, faBuilding, faEnvelope, faPhone, faDollarSign, faCalendar, faRupeeSign } from '@fortawesome/free-solid-svg-icons';
+import { faUser, faBuilding, faEnvelope, faPhone, faDollarSign, faCalendar, faRupeeSign, faMoneyBill1Wave } from '@fortawesome/free-solid-svg-icons';
 import Button from '../components/Button';
 import api from '../utils/APIClient';
 import { useNavigate } from 'react-router-dom';
-// import { toWords } from "number-to-words";
+import { toWords } from "number-to-words";
 
 const Home = () => {
-    const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
     const [values, setValues] = useState({
         name: '',
         company_name: '',
@@ -31,26 +31,32 @@ const Home = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Form Values:', values);
+        if (loading) return;
+        if (values.event === "" || values.amount === "") return;
+        setLoading(true);
         api.post('/sponsorship/add', values).then((res) => {
-            let sponserId = res.sponsor.id;
+            let sponserId = res.id;
             api.post('/payments/create', { amount: parseFloat(values.amount), sponsor_id: sponserId }).then((res) => {
                 window.location.href = res.pay_page_url;
+            }).finally(() => {
+                setLoading(false);
             });
+        }).finally(() => {
+            setLoading(false);
         });
     };
 
-    // const [words, setWords] = useState("");
+    const [words, setWords] = useState("");
 
-    // useEffect(() => {
-    //     if (values.amount === "") {
-    //         setWords("");
-    //         return;
-    //     }
-    //     let text = toWords(values.amount);
-    //     setWords(text.charAt(0).toUpperCase() + text.slice(1));
-    // }
-    //     , [values.amount]);
+    useEffect(() => {
+        if (values.amount === "") {
+            setWords("");
+            return;
+        }
+        let text = toWords(values.amount);
+        setWords(text.charAt(0).toUpperCase() + text.slice(1));
+    }
+        , [values.amount]);
 
     return (
         <div className="flex rounded-lg items-center w-full min-h-[calc(100vh-10rem)]">
@@ -91,8 +97,8 @@ const Home = () => {
                             <option value="codingcommunity">Coding Community</option>
                         </select>
                     </div>
-                    {/* <p>Paying: Rs {words !== "" ? words : "Zero"} Only</p> */}
-                    <Button className="py-2 mt-4" isActive text="Submit" />
+                    <p>Paying: Rs {words !== "" ? words : "Zero"} Only</p>
+                    <Button icon={faMoneyBill1Wave} className="py-2" isActive text="Submit" disabled={loading} />
                 </form>
             </div>
         </div>

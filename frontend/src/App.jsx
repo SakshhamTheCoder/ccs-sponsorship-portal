@@ -8,6 +8,7 @@ import {
 import Home from "./pages/Home";
 import Loader from "./components/Loader";
 import Navbar from "./components/Navbar";
+import PaymentStatus from "./pages/PaymentStatus";
 
 const App = () => {
 
@@ -22,7 +23,7 @@ const App = () => {
             path="/payment-status/:txnid"
             element={
               // true ? <PaymentStatus /> : <Navigate to="/" />
-              <Loader />
+              <PaymentStatus />
             }
           />
         </Routes>
