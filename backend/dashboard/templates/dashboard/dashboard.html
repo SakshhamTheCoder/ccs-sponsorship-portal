@@ -1,14 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-
-<body>
-    <p>Dashboard</p>
-</body>
-
-</html>
+{% block content %}
+<div class="flex rounded-lg items-center w-full min-h-screen p-8">
+    <div
+        class="flex flex-col rounded-lg p-8 shadow-lg border-2 h-full w-full bg-gray-100 justify-center items-center md:p-16">
+        <div class="text-4xl font-bold text-center mb-6">
+            Successful Payments
+        </div>
+        <hr class="my-6 border-2 rounded-lg w-1/2" />
+        {% if payments %}
+        <div class="flex flex-col gap-6 w-full max-w-6xl mt-8 justify-center items-center">
+            <div class="overflow-x-auto w-full">
+                <table class="table-auto w-full bg-white border-collapse rounded-lg overflow-hidden shadow-lg">
+                    <thead class="bg-gray-50 text-black">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Payment ID</th>
+                            <th class="px-4 py-2 text-left">Amount</th>
+                            <th class="px-4 py-2 text-left">Status</th>
+                            <th class="px-4 py-2 text-left">Transaction Id</th>
+                            <th class="px-4 py-2 text-left">Date</th>
+                            <th class="px-4 py-2 text-left">Company Name</th>
+                            <th class="px-4 py-2 text-left">Sponsor Name</th>
+                            <th class="px-4 py-2 text-left">Email</th>
+                            <th class="px-4 py-2 text-left">Contact</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                        <tr class="{% cycle 'bg-gray-100' 'bg-gray-200' %}">
+                            <td class="px-4 py-2">{{ payment.id }}</td>
+                            <td class="px-4 py-2">₹{{ payment.amount }}</td>
+                            <td class="px-4 py-2">{{ payment.status }}</td>
+                            <td class="px-4 py-2">{{ payment.transaction_id }}</td>
+                            <td class="px-4 py-2">{{ payment.payment_date|date:"d M Y" }}</td>
+                            <td class="px-4 py-2">{{ payment.sponsor.company_name }}</td>
+                            <td class="px-4 py-2">{{ payment.sponsor.name }}</td>
+                            <td class="px-4 py-2">{{ payment.sponsor.email }}</td>
+                            <td class="px-4 py-2">{{ payment.sponsor.contact }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="text-center text-gray-500">
+            No payments found.
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
